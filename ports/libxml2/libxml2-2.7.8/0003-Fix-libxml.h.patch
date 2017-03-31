@@ -1,0 +1,20 @@
+Disable POSIX error codes definition in Windows 10 SDK
+
+This prevents warnings like this when building libxml2 2.7.8 in Visual Studio 2015:
+  ..\include\wsockcompat.h(41): warning C4005: 'EWOULDBLOCK': macro redefinition
+  C:\Program Files (x86)\Windows Kits\10\include\10.0.14393.0\ucrt\errno.h(124): note: see previous definition of 'EWOULDBLOCK'
+
+diff --git a/libxml.h b/libxml.h
+index dfc6c64..401ef14 100644
+--- a/libxml.h
++++ b/libxml.h
+@@ -17,6 +17,9 @@
+ #define _FILE_OFFSET_BITS 64
+ #endif
+ #endif
++#ifndef _CRT_NO_POSIX_ERROR_CODES
++#define _CRT_NO_POSIX_ERROR_CODES
++#endif
+ 
+ #if defined(macintosh)
+ #include "config-mac.h"
