@@ -1,9 +1,5 @@
----
- win32/Makefile.msvc | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
 diff --git a/win32/Makefile.msvc b/win32/Makefile.msvc
-index d16c1a2..de9e22e 100644
+index bd0eb9d..53faa82 100644
 --- a/win32/Makefile.msvc
 +++ b/win32/Makefile.msvc
 @@ -28,11 +28,11 @@ XML_A = $(XML_BASENAME)_a.lib
@@ -23,38 +19,50 @@ index d16c1a2..de9e22e 100644
  
  # The preprocessor and its options.
  CPP = cl.exe /EP
-@@ -72,16 +72,18 @@ LIBS =
+@@ -69,13 +69,17 @@ LIBS =
  LIBS = $(LIBS) wsock32.lib ws2_32.lib
  !endif 
  !if "$(WITH_ICONV)" == "1"
 -LIBS = $(LIBS) iconv.lib
 +LIBS = $(LIBS) libiconv.lib libcharset.lib
  !endif 
- !if "$(WITH_ICU)" == "1"
- LIBS = $(LIBS) icu.lib
- !endif
+-+!if "$(WITH_ICU)" == "1"
+-+LIBS = $(LIBS) icu.lib
+-+!endif
++!if "$(WITH_ICU)" == "1"
++LIBS = $(LIBS) icu.lib
++!endif
  !if "$(WITH_ZLIB)" == "1"
--# could be named differently zdll or zlib
--# LIBS = $(LIBS) zdll.lib
+-LIBS = $(LIBS) zdll.lib
 +!if "$(DEBUG)" == "1"
 +LIBS = $(LIBS) zlibd.lib
 +!else
- LIBS = $(LIBS) zlib.lib
- !endif
++LIBS = $(LIBS) zlib.lib
 +!endif
- !if "$(WITH_LZMA)" == "1"
- LIBS = $(LIBS) liblzma.lib
  !endif
-@@ -101,10 +103,10 @@ ARFLAGS = /nologo
- CFLAGS = $(CFLAGS) /D "_DEBUG" /Od /Z7
+ !if "$(WITH_THREADS)" == "posix"
+ LIBS = $(LIBS) pthreadVC.lib
+@@ -94,7 +98,7 @@ CFLAGS = $(CFLAGS) /D "_DEBUG" /Od /Z7
  LDFLAGS = $(LDFLAGS) /DEBUG
  !else
  CFLAGS = $(CFLAGS) /D "NDEBUG" /O2 
- # commented out as this break VC10 c.f. 634846
- # LDFLAGS = $(LDFLAGS) /OPT:NOWIN98
--LDFLAGS = $(LDFLAGS)
+-LDFLAGS = $(LDFLAGS) /OPT:NOWIN98
 +LDFLAGS = $(LDFLAGS) /DEBUG /OPT:REF /OPT:ICF
  !endif
  
  # Libxml object files.
--- 
+@@ -289,11 +293,12 @@ distclean : clean
+ rebuild : clean all
+ 
+ install-libs : all
+-	if not exist $(INCPREFIX)\libxml mkdir $(INCPREFIX)\libxml
++	if not exist $(INCPREFIX)\libxml2 mkdir $(INCPREFIX)\libxml2
++	if not exist $(INCPREFIX)\libxml2\libxml mkdir $(INCPREFIX)\libxml2\libxml
+ 	if not exist $(BINPREFIX) mkdir $(BINPREFIX)
+ 	if not exist $(LIBPREFIX) mkdir $(LIBPREFIX)
+ 	if not exist $(SOPREFIX) mkdir $(SOPREFIX)
+-	copy $(XML_SRCDIR)\include\libxml\*.h $(INCPREFIX)\libxml
++	copy $(XML_SRCDIR)\include\libxml\*.h $(INCPREFIX)\libxml2\libxml
+ 	copy $(BINDIR)\$(XML_SO) $(SOPREFIX)
+ 	copy $(BINDIR)\$(XML_A) $(LIBPREFIX)
+ 	copy $(BINDIR)\$(XML_A_DLL) $(LIBPREFIX)

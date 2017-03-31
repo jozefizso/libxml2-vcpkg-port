@@ -7,11 +7,11 @@
 #
 
 include(vcpkg_common_functions)
-set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/libxml2-2.9.4)
+set(SOURCE_PATH ${CURRENT_BUILDTREES_DIR}/src/libxml2-2.7.8)
 vcpkg_download_distfile(ARCHIVE
-    URLS "ftp://xmlsoft.org/libxml2/libxml2-2.9.4.tar.gz"
-    FILENAME "libxml2-2.9.4.tar.gz"
-    SHA512 f5174ab1a3a0ec0037a47f47aa47def36674e02bfb42b57f609563f84c6247c585dbbb133c056953a5adb968d328f18cbc102eb0d00d48eb7c95478389e5daf9
+    URLS "ftp://xmlsoft.org/libxml2/libxml2-2.7.8.tar.gz"
+    FILENAME "libxml2-2.7.8.tar.gz"
+    SHA512 cb5d88f95feffde6a805a7583306864ad9cc909e958a1044afc6d5864ec480da545343f25c10bba99be59c2344e98d4cd2dcc8a152407a0ce581a51ce214d6bc
 )
 vcpkg_extract_source_archive(${ARCHIVE})
 
@@ -20,6 +20,8 @@ find_program(NMAKE nmake)
 vcpkg_apply_patches(
     SOURCE_PATH ${SOURCE_PATH}/
     PATCHES ${CMAKE_CURRENT_LIST_DIR}/0001-Fix-makefile.patch
+    PATCHES ${CMAKE_CURRENT_LIST_DIR}/0002-Fix-win32config.h.patch
+    PATCHES ${CMAKE_CURRENT_LIST_DIR}/0003-Fix-libxml.h.patch
 )
 
 set(SCRIPTS_DIR ${SOURCE_PATH}/win32)
@@ -154,6 +156,7 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/libxml2_a.lib ${CURRENT_PACKAGES_DIR}/lib/libxml2_a_dll.lib)
     file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/libxml2_a.lib ${CURRENT_PACKAGES_DIR}/debug/lib/libxml2_a_dll.lib)
 else()
+    file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/libxml2.dll ${CURRENT_PACKAGES_DIR}/debug/lib/libxml2.dll)
     file(REMOVE ${CURRENT_PACKAGES_DIR}/lib/libxml2.lib ${CURRENT_PACKAGES_DIR}/lib/libxml2_a_dll.lib)
     file(REMOVE ${CURRENT_PACKAGES_DIR}/debug/lib/libxml2.lib ${CURRENT_PACKAGES_DIR}/debug/lib/libxml2_a_dll.lib)
     file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
