@@ -6,6 +6,7 @@ This repository contains port files for building **libxml2** library using [vcpk
 
 Supported releases:
 * 2.7.8
+* 2.9.3
 * 2.9.4
 
 
